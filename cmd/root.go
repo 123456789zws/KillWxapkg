@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"flag"
-	"fmt"
 	"log"
 	"sync"
 
@@ -11,13 +9,7 @@ import (
 	"github.com/Ackites/KillWxapkg/internal/restore"
 )
 
-func Execute(appID, input, outputDir, fileExt string, restoreDir bool, pretty bool) {
-	if appID == "" || input == "" {
-		fmt.Println("使用方法: program -id=<AppID> -in=<输入文件1,输入文件2> 或 -in=<输入目录> -out=<输出目录> [-ext=<文件后缀>] [-restore]")
-		flag.PrintDefaults()
-		return
-	}
-
+func Execute(appID, input, outputDir, fileExt string, restoreDir bool, pretty bool, noClean bool, save bool, sensitive bool) {
 	// 存储配置
 	configManager := NewSharedConfigManager()
 	configManager.Set("appID", appID)
@@ -26,6 +18,9 @@ func Execute(appID, input, outputDir, fileExt string, restoreDir bool, pretty bo
 	configManager.Set("fileExt", fileExt)
 	configManager.Set("restoreDir", restoreDir)
 	configManager.Set("pretty", pretty)
+	configManager.Set("noClean", noClean)
+	configManager.Set("save", save)
+	configManager.Set("sensitive", sensitive)
 
 	inputFiles := ParseInput(input, fileExt)
 
@@ -44,7 +39,7 @@ func Execute(appID, input, outputDir, fileExt string, restoreDir bool, pretty bo
 		wg.Add(1)
 		go func(file string) {
 			defer wg.Done()
-			err := ProcessFile(file, outputDir, appID)
+			err := ProcessFile(file, outputDir, appID, save)
 			if err != nil {
 				log.Printf("处理文件 %s 时出错: %v\n", file, err)
 			} else {

@@ -1,6 +1,7 @@
 # KillWxapkg
 
-> 存Golang实现，一个用于自动化反编译微信小程序的工具，小程序安全利器，自动解密，解包，可最大程度还原工程目录
+> 纯Golang实现，一个用于自动化反编译微信小程序的工具，小程序安全利器，
+> 自动解密，解包，可还原工程目录，支持微信开发者工具运行
 
 [![stable](https://img.shields.io/badge/stable-stable-green.svg)](https://github.com/Ackites/KillWxapkg)
 [![license](https://img.shields.io/github/license/Ackites/KillWxapkg)]()
@@ -31,18 +32,82 @@
 - [x] 支持还原源代码工程目录结构
   - [x] Json配置文件还原
   - [x] JavaScript代码还原
-  - [ ] Wxml代码还原
-  - [ ] Wxss代码还原
-- [ ] 转换 Uni-app 项目
-- [ ] 敏感数据导出
+  - [x] Wxml代码还原
+  - [x] Wxss代码还原
+- [x] Hook小程序，动态调试，开启小程序F12
+- [x] 重新打包wxapkg，可破解小程序
+  - [x] 监听将要打包的文件夹，并自动打包
+- [x] 敏感数据导出
+- [ ] 支持小游戏
 
 ### 工程结构还原
 
-#### 未还原
-<img src="./images/img.png" width="30%">
+<div style="display: flex ">
+  <div>
+    <h4>还原前</h4>
+    <img src="./images/img4.png" width="30%">
+  </div>
+  <div>
+    <h4>还原后</h4>
+    <img src="./images/img5.png" width="30%"> 
+  </div>
+</div>
 
-#### 还原后
-<img src="./images/img1.png" width="30%">
+#### 微信开发者工具运行
+
+<img src="./images/img6.png" width="30%">
+
+### Hook支持版本列表
+
+| 小程序版本     |
+|-----------|
+| 9193_x64  |
+| 11159_x64 |
+| 9185_x64  |
+| 9129_x64  |
+| 9115_x64  |
+| 8555_x64  |
+| 9105_x64  |
+| 8555_x64  |
+| 9079_x64  |
+| 8531_x64  |
+| 8529_x64  |
+| 8519_x64  |
+| 8501_x64  |
+| 8461_x64  |
+| 8447_x64  |
+
+#### 如何查看当前运行版本？
+
+<div style="display: flex ">
+  <img src="./images/img7.png" width="30%">
+  <img src="./images/img8.png" width="30%">
+</div>
+
+#### 开启小程序F12
+
+> **运行前先启动微信（建议小号，有被封号风险）**
+
+```shell
+<本程序> -hook
+ ```
+
+<img src="./images/img9.jpg" width="60%">
+
+### 重新打包运行
+
+```shell
+<本程序> -repack=<输入目录> [-out=<输出目录或文件>] [-watch]
+ ```
+
+<img src="./images/img10.png" width="70%">
+
+#### 效果示例
+
+<div style="display: flex ">
+  <img src="./images/img11.png" width="30%">
+  <img src="./images/img12.png" width="30%">
+</div>
 
 ## 安装
 
@@ -64,8 +129,8 @@
 
 ## 用法
 
-> 使用方法: program -id=<AppID> -in=<输入文件1,输入文件2> 或 -in=<输入目录> -out=<输出目录> 
-> [-restore] [-pretty] [-ext=<文件后缀>] 
+> -id=<输入AppID> -in=<输入文件1,输入文件2> 或 -in=<输入目录> -out=<输出目录> 
+> [-ext=<文件后缀>] [-restore] [-pretty] [-noClean] [-help] [-hook] [-save] [-repack=<输入目录>] [-watch] [-sensitive]
 
 ### 参数说明
 - `-id string`
@@ -85,8 +150,23 @@
 - `-pretty`
     - 是否美化输出，默认不美化，美化需较长时间
 - `-ext string`
-  - 处理的文件后缀 (default ".wxapkg")
-  - 例：-ext=.wxapkg
+    - 处理的文件后缀 (default ".wxapkg")
+    - 例：-ext=.wxapkg
+- `-noClean`
+    - 是否清理反编译的中间文件，默认清理
+- `-hook`
+    - 是否Hook小程序，动态调试，开启F12，默认不Hook
+    - **注意：目前仅支持Windows，建议小号，有封号风险**
+- `-save`
+    - 是否保存解密后的文件，默认不保存
+- `-repack string`
+    - 重新打包目录路径
+    - 例：-repack="C:\Users\mi\Desktop\Applet\64"
+    - **注意：目前仅支持一次打包一个文件，同时仅支持未被解析的源文件（未使用-restore）**
+- `-watch`
+    - 是否监听将要打包的文件夹，并自动打包，默认不监听
+- `-sensitive`
+    - 是否导出敏感数据，默认不导出，导出后会在工具目录下生成sensitive_data.json文件，支持自定义规则
 - `-help`
     - 显示帮助信息
 
